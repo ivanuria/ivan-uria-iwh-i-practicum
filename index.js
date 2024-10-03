@@ -13,28 +13,43 @@ app.use(express.json());
 const PRIVATE_APP_ACCESS = process.env['HUBSPOT_API'];
 const CUSTOM_OBJECT = '2-134136663';
 
-app.get('/', async (req, res) => {
-    const hsPetsIds = await  axios.get(
-        `https://api.hubapi.com/crm/v3/objects/${CUSTOM_OBJECT}?limit=100&archived=false&properties=name&properties=kind&properties=age
-        `,
-        {
-            headers: {
-                Authorization: `Bearer ${PRIVATE_APP_ACCESS}`
-            }
-        }
-    );
-    const data = hsPetsIds.data.results;
-    const fn = pug.compileFile('./views/homepage.pug');
+function renderError(error, res) {
+    console.log(error);
+    const fn = pug.compileFile('./views/error.pug');
     const html = fn({ data });
-    res.send(html);
+    res.render(html);
+}
+
+app.get('/', async (req, res) => {
+    try {
+        const hsPetsIds = await  axios.get(
+            `https://api.hubapi.com/crm/v3/objects/${CUSTOM_OBJECT}?limit=100&archived=false&properties=name&properties=kind&properties=age
+            `,
+            {
+                headers: {
+                    Authorization: `Bearer ${PRIVATE_APP_ACCESS}`
+                }
+            }
+        );
+        const data = hsPetsIds.data.results;
+        const fn = pug.compileFile('./views/homepage.pug');
+        const html = fn({ data });
+        res.render(html);
+    } catch (error) {
+        renderError(error, res)
+    }
 });
 
 // TODO: ROUTE 2 - Create a new app.get route for the form to create or update new custom object data. Send this data along in the next route.
 
 app.get('/update-cobj', async (req, res) => {
-    const fn = pug.compileFile('./views/updates.pug');
-    const html = fn();
-    res.send(html);
+    try {
+        const fn = pug.compileFile('./views/updates.pug');
+        const html = fn();
+        res.render(html);
+    } catch (error) {
+        renderError(error, res)
+    }
 });
 
 // TODO: ROUTE 3 - Create a new app.post route for the custom objects form to create or update your custom object data. Once executed, redirect the user to the homepage.
