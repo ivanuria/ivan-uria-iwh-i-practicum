@@ -11,12 +11,24 @@ app.use(express.json());
 
 // * Please DO NOT INCLUDE the private app access token in your repo. Don't do this practicum in your normal account.
 const PRIVATE_APP_ACCESS = process.env['HUBSPOT_API'];
+const CUSTOM_OBJECT = '2-134136663';
 
 // TODO: ROUTE 1 - Create a new app.get route for the homepage to call your custom object data. Pass this data along to the front-end and create a new pug template in the views folder.
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
+    const hsPetsIds = await  axios.get(
+        `https://api.hubapi.com/crm/v3/objects/${CUSTOM_OBJECT}?limit=100&archived=false&properties=name&properties=kind&properties=age
+        `,
+        {
+            headers: {
+                Authorization: `Bearer ${PRIVATE_APP_ACCESS}`
+            }
+        }
+    );
+    const data = hsPetsIds.data.results;
+    console.log(data);
     const fn = pug.compileFile('./views/homepage.pug');
-    const html = fn({data: [{properties: {name: 'hola', kind: 'caracola', age: 12}}]})
+    const html = fn({ data })
     res.send(html);
 });
 
