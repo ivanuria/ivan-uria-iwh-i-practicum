@@ -34,7 +34,7 @@ app.get('/', async (req, res) => {
         const data = hsPetsIds.data.results;
         const fn = pug.compileFile('./views/homepage.pug');
         const html = fn({ data });
-        res.render(html);
+        res.send(html);
     } catch (error) {
         renderError(error, res)
     }
@@ -46,7 +46,7 @@ app.get('/update-cobj', async (req, res) => {
     try {
         const fn = pug.compileFile('./views/updates.pug');
         const html = fn();
-        res.render(html);
+        res.send(html);
     } catch (error) {
         renderError(error, res)
     }
