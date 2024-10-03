@@ -5,16 +5,17 @@ html(lang='en')
     meta(name="viewport" content="width=device-width, initial-scale=1")
     link(rel="stylesheet", href="/css/style.css")
   body
-    h1 Iván's Pets
-    table
-      thead
-        tr
-          td Name
-          td Kind
-          td Age
-      tbody
-        each pet in data
+    .content
+      h1 Iván's Pets
+      table
+        thead
           tr
-            td #{pet.properties.name}
-            td #{pet.properties.kind}
-            td #{pet.properties.age}
+            th Name
+            th Kind
+            th Age
+        tbody
+          each pet in data
+            tr
+              td #{pet.properties.name}
+              td #{pet.properties.kind}
+              td #{pet.properties.age}
